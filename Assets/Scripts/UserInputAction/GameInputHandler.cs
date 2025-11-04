@@ -42,20 +42,20 @@ public class GameInputHandler : MonoBehaviour
     }
 
     // ---------------- Player 1 ----------------
-    private void Player1Up() => throw new System. NotImplementedException();
-    private void Player1Down() => throw new System.NotImplementedException();
-    private void Player1Left() => throw new System.NotImplementedException();
-    private void Player1Right() => throw new System.NotImplementedException();
-    private void Player1MainAction() => throw new System.NotImplementedException();
+    private void Player1Up() => IUserInterface.GetInstance().HandlePlayer1Up();
+    private void Player1Down() => IUserInterface.GetInstance().HandlePlayer1Down();
+    private void Player1Left() => IUserInterface.GetInstance().HandlePlayer1Left();
+    private void Player1Right() => IUserInterface.GetInstance().HandlePlayer1Right();
+    private void Player1MainAction() => IUserInterface.GetInstance().HandlePlayer1MainAction();
 
     // ---------------- Player 2 ----------------
-    private void Player2Up() => throw new System.NotImplementedException();
-    private void Player2Down() => throw new System.NotImplementedException();
-    private void Player2Left() => throw new System.NotImplementedException();
-    private void Player2Right() => throw new System.NotImplementedException();
-    private void Player2MainAction() => throw new System.NotImplementedException();
+    private void Player2Up() => IUserInterface.GetInstance().HandlePlayer2Up();
+    private void Player2Down() => IUserInterface.GetInstance().HandlePlayer2Down();
+    private void Player2Left() => IUserInterface.GetInstance().HandlePlayer2Left();
+    private void Player2Right() => IUserInterface.GetInstance().HandlePlayer2Right();
+    private void Player2MainAction() => IUserInterface.GetInstance().HandlePlayer2MainAction();
     
     // ---------------- Editor ----------------
-    private void EditorCheatKey() => throw new System.NotImplementedException();
-    private void EditorPauseGame() => throw new System.NotImplementedException();
+    private void EditorCheatKey() => IUserInterface.GetInstance().HandleEditorCheatKey();
+    private void EditorPauseGame() => IUserInterface.GetInstance().HandleEditorPauseKey();
 }
