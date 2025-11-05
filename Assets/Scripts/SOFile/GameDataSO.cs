@@ -2,11 +2,11 @@
 using UnityEngine;
 
 
-
+// TODO: Decide if this is in Table or Game
 namespace SOFile
 {
-    [CreateAssetMenu(fileName = "TableData", menuName = "ScriptableObjects/TableDataSO")]
-    public class TableDataSO : ScriptableObject
+    [CreateAssetMenu(fileName = "TableData", menuName = "ScriptableObjects/GameDataSO")]
+    public class GameDataSO : ScriptableObject
     {
         [Header("hand")]
         public List<CardDataSO> cards;
@@ -16,13 +16,16 @@ namespace SOFile
         [Header("match data")] 
         public int roundRemaining;
         public int maxRound = 10;
+
+        // TODO: Refactor so this goes into Match Data
+        // or player data
         public int playerHealth = 100;
         public int opponentHealth = 100;
         public int cardVisibleDuration = 15;
 
 
         
-        public void ResetDataForRound()
+        public void ResetDataForGame()
         {
             cards.Clear();
             roundRemaining = maxRound;

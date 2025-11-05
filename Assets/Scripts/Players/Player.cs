@@ -26,26 +26,28 @@ public class Player : IPlayer
         }
 
         instance = this;
-        DontDestroyOnLoad(gameObject);
-    }
-    public void Start()
-    {
-        playerData = Resources.Load<UserDataSO>("InGameData/PlayerHandSO");
-        
-        if (playerData == null)
+        playerHandData = Resources.Load<UserDataSO>("InGameData/PlayerHandSO");
+        if (playerHandData == null)
         {
             Debug.LogError("[Player] Failed to load UserDataSO assets from Resources/UserData/");
         }
-
-        playerData.ResetData();
+        DontDestroyOnLoad(gameObject);
     }
+    // public void Start()
+    // {
+    //
+    //     
+    //
+    //
+    //     playerHandData.ResetData();
+    // }
     
     public void DisplayPlayerCard()
     {
         foreach (Transform child in cardDisplayParent)
             Destroy(child.gameObject);
 
-        foreach (var card in playerData.cards)
+        foreach (var card in playerHandData.cards)
         {
             var cardObj = Instantiate(cardDisplayPrefab, cardDisplayParent);
             var display = cardObj.AddComponent<PlayerCardDisplay>();

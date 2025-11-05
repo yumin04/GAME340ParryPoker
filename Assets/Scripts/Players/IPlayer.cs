@@ -1,27 +1,36 @@
 ﻿using SOFile;
 using UnityEngine;
 
+public enum PlayerChoice
+{
+    Attack,
+    Keep
+}
 
 public abstract class IPlayer : MonoBehaviour
 {
-    protected UserDataSO playerData;
-    public void AddCard(CardDataSO cardData)
+    protected UserDataSO playerHandData;
+    private void OnEnable()
     {
-        playerData.cards.Add(cardData);
+        GameEvents.OnNewGameStarted += ResetPlayerHandData;   
     }
 
-    public void AddCard(CardObject cardObject)
+    private void OnDisable()
     {
-        playerData.cards.Add(cardObject.GetCardData());
+        GameEvents.OnNewGameStarted -= ResetPlayerHandData;
     }
+
+    public void AddCard(CardDataSO cardData) => playerHandData.cards.Add(cardData);
+
+
+    public void AddCard(CardObject cardObject) => playerHandData.cards.Add(cardObject.GetCardData());
+
+    public void KeepCard(CardDataSO cardData) => AddCard(cardData);
     
-    public void KeepCard(CardDataSO cardData)
-    {
-        AddCard(cardData);
-    }
-    public void KeepCard(CardObject cardData)
-    {
-        AddCard(cardData);
-    }
+    public void KeepCard(CardObject cardData) => AddCard(cardData);
+    
+    
+    public void ResetPlayerHandData() => playerHandData.ResetData();
+
     // Notify(this)
 }

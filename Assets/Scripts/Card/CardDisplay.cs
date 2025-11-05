@@ -4,6 +4,8 @@ using UnityEngine.UI;
 public abstract class CardDisplay : MonoBehaviour
 {
         private CardDataSO cardData;
+        public CardDataSO GetCardData() => cardData;
+
         private Image image;
     
         public void Awake()
@@ -26,4 +28,6 @@ public abstract class CardDisplay : MonoBehaviour
         {
             cardData = card;
         }
+
+
 }

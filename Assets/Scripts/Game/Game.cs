@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections;
 using SOFile;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Game : MonoBehaviour
 {
     private static Game instance;
+    
+    private GameDataSO gameTableData;
 
-    public static Game GetInstance()
-    {
-        return instance;
-    }
+    [SerializeField] private GameObject roundGameObject;
+    [SerializeField] private GameObject tableGameObject;
+    
+    private GameObject currentRoundObject;
+
+    public static Game GetInstance() => instance;
 
     private void Awake()
     {
@@ -23,12 +28,78 @@ public class Game : MonoBehaviour
         instance = this;
     }
 
+    private void OnEnable()
+    {
+        GameEvents.OnNewGameStarted += ResetGameTableData;   
+    }
+
+    private void OnDisable()
+    {
+        GameEvents.OnNewGameStarted -= ResetGameTableData;
+    }
+
     void Start()
     {
+        // Getting Game Data SO for the round
+        gameTableData = Resources.Load<GameDataSO>("InGameData/GameDataSO");
+        
+        if (gameTableData == null)
+        {
+            Debug.LogError("[Player] Failed to load UserDataSO assets from Resources/UserData/");
+        }
+        
+        // Reset Data
+        GameEvents.OnNewGameStarted.Invoke();
+
+        
+        
+        // Add all the round cards here
+        AddAllCardsForGame();
+        
+        // Initialize Table Object
+        Instantiate(tableGameObject);
+
+        // Initialize Game for players and display player card
         StartCoroutine(InitializeGame());
+
+        // Display All Cards 
+        Table.GetInstance().DisplayTableCardsInMain(gameTableData.cards);
+        Table.GetInstance().StartFlipAllCardsCountdown(gameTableData.cardVisibleDuration);
+
     }
     
+    private void AddAllCardsForGame()
+    {
+        // 1️⃣ 기존 카드 초기화
+        gameTableData.cards.Clear();
 
+        // 2️⃣ 원하는 개수만큼 랜덤 카드 추가 (ex: 10장)
+        int cardCount = gameTableData.maxRound;
+        var assigner = CardAssigner.GetInstance();
+
+        for (int i = 0; i < cardCount; i++)
+        {
+            CardDataSO randomCard = assigner.GetRandomCard();
+            gameTableData.cards.Add(randomCard);
+        }
+
+        Debug.Log($"[{nameof(AddAllCardsForGame)}] Added {cardCount} random cards to gameTableData.");
+    }
+
+    private void ResetGameTableData()
+    {
+        gameTableData.ResetDataForGame();
+    }
+
+    // public void AddCard(CardDataSO cardData)
+    // {
+    //     TableData.cards.Add(cardData);
+    // }
+    //
+    // public void AddCard(CardObject cardObject)
+    // {
+    //     TableData.cards.Add(cardObject.GetCardData());
+    // }
     private IEnumerator InitializeGame()
     {
         yield return null; // 한 프레임 기다려서 모든 Start() 실행 이후 실행
@@ -41,9 +112,6 @@ public class Game : MonoBehaviour
             Computer.GetInstance().AddCard(computerCard);
         }
         Player.GetInstance().DisplayPlayerCard();
-        
-        //Table initialization
-        Table.GetInstance().InitializeTable();
     }
 
 
@@ -51,102 +119,59 @@ public class Game : MonoBehaviour
     // TODO: REFACTOR
     // TODO: VERY IMPORTANT REFACTOR
     // TODO: WILL TAKE LONG
-    public void Notify(string argument)
+
+    public Action GetOnTableCardShowEnd()
     {
-        if (argument == "Game Started")
+        return OnTableCardShowEnd;
+    }
+
+    private void OnTableCardShowEnd() => StartGame();
+    private void StartGame()
+    {
+        // Flip card and put board on top
+        FlipTableCards();
+        PutTableOnTop();
+        
+        // Initialize OneRoundGameObject
+        OnNewRound();
+    }
+
+    public Action GetOnRoundEnd() => OnRoundEnd;
+
+
+    private void OnRoundEnd()
+    {
+        if (gameTableData.cards.Remove(OneRound.GetInstance().GetCurrentRoundCardData()))
         {
-            StartGame();
-        } 
-        else if (argument == "Player Prio")
-        {
-            // Computer.GetInstance().StopCatchCoroutine();
-            HandlePlayerPrio();
-            // Let player decide
-            // Attack or Keep
-            // Card Front will be shown in the middle for player
-            // Initialize Panel in UI with 
-                // Attack Button
-                // Keep Button
+            Debug.Log("[Game.cs] Removed Successfully");
         }
-        else if (argument == "Computer Prio")
+        else
         {
-            HandleComputerPrio();
-            // Let Computer Decide
-            // Attack or Keep
-            // Card Back will be shown to the player
-            // This will be random 50 - 50 chance
+            Debug.Log("[Game.cs] Not removed. Make sure to fix this properly");
         }
-        else if (argument == "Player Attack Pressed")
+        Destroy(currentRoundObject);
+        if (gameTableData.roundRemaining > 0)
         {
-            
+            OnNewRound();
         }
-        else if (argument == "Player Keep Pressed")
+        else
         {
-            
-        }
-        else if (argument == "Card Initialized To Table")
-        {
-            // Computer.Getinstance.TryCatchCoroutine();
-        }
-        else if (argument == "Next Round")
-        {
-            
-        }
-        else if (argument == "End Game")
-        {
-            
-        }
-        else if (argument == "End Match")
-        {
-            
+            CalculateWinnerOfGame();
         }
     }
 
-    public Action GetHandleComputerPrio() => HandleComputerPrio;
-    public Action GetHandlePlayerPrio() => HandlePlayerPrio;
-    private void HandleComputerPrio()
+    private void CalculateWinnerOfGame()
     {
-        // GameDataSO cardData = Table.GetInstance().GetCurrentCardData();
-        // Computer.GetInstance().ChooseAttackOrKeep(cardData);
         throw new NotImplementedException();
     }
 
-    private void HandlePlayerPrio()
+    private void OnNewRound()
     {
-        // UI.GetInstance().DisplayUserSelectActionPanel();
-        throw new NotImplementedException();
+        gameTableData.roundRemaining--;
+        currentRoundObject = Instantiate(roundGameObject);
     }
 
-    private void HandlePlayerChoseAttack()
-    {
-        //Computer.GetInstance().Keep(cardData);
-        // Table.GetInstance().AttackChosen();
-    }
 
-    private void HandlePlayerChoseKeep()
-    {
-        // GameDataSO cardData = Table.GetInstance().GetCurrentCardData();
-        // Player.GetInstance().Keep(cardData);
-    }
-    private void HandleComputerChoseAttack()
-    {
-        // GameDataSO cardData = Table.GetInstance().GetCurrentCardData();
-        // Player.GetInstance().Keep(cardData);
-        // Table.GetInstance().AttackChosen();
-    }
-
-    private void HandleComputerChoseKeep()
-    {
-        // GameDataSO cardData = Table.GetInstance().GetCurrentCardData();
-        // Computer.GetInstance().Keep(cardData);
-    }
-
-    // TODO: Something like IPlayer needs to be used for proper refactoring
-    // public void HandleAttackPressed(IPlayer player)
-    // {
-    //     throw new NotImplementedException();
-    // }
-    
     public void Notify(Action action)
     {
         if (action != null)
@@ -171,23 +196,10 @@ public class Game : MonoBehaviour
             action.Invoke(Computer.GetInstance());
         }
     }
-    private void StartGame()
-    {
-        // Flip card and put board on top
-        FlipTableCards();
-        PutTableOnTop();
-        
-        // Start Round Countdown
-        StartCoroutine(StartRoundCountdown());
-        // Table에서 한개의 card를 select해서
-        // 중간에 init
-    }
 
-    public IEnumerator StartRoundCountdown()
-    {
-        yield return new WaitForSeconds(2f);
-        Table.GetInstance().ChooseOneCardFromTable();
-    }
+    
+
+    
     // TODO: Animate
     private void FlipTableCards() => GameEvents.OnFlipCountdownEnd?.Invoke();
     private void PutTableOnTop()=> Table.GetInstance().ChangeTableDisplay();
