@@ -13,15 +13,11 @@ namespace SOFile
 
         public Sprite cardBackImage;
 
-        [Header("match data")] 
+        [Header("game data")] 
         public int roundRemaining;
         public int maxRound = 10;
-
-        // TODO: Refactor so this goes into Match Data
-        // or player data
-        public int playerHealth = 100;
-        public int opponentHealth = 100;
         public int cardVisibleDuration = 15;
+
 
 
         

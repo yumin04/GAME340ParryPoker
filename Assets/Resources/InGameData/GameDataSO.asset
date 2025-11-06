@@ -12,19 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c6d5f4b646c44feaad968025ca857ad, type: 3}
   m_Name: GameDataSO
   m_EditorClassIdentifier: Assembly-CSharp::SOFile.TableDataSO
-  cards:
-  - {fileID: 11400000, guid: 1344264a882e97f4da8870d1b26eb0d9, type: 2}
-  - {fileID: 11400000, guid: c77cc9222262d544a909e774e116e00d, type: 2}
-  - {fileID: 11400000, guid: a3c92f95d16e83e46bd8697172630ce5, type: 2}
-  - {fileID: 11400000, guid: 92dccf09db918504ba71abecc560e0fa, type: 2}
-  - {fileID: 11400000, guid: 57b01bf77f2e6e6478dfc7866fb9e4dc, type: 2}
-  - {fileID: 11400000, guid: f47f9a78a6f014f4698527081a80d766, type: 2}
-  - {fileID: 11400000, guid: 57b01bf77f2e6e6478dfc7866fb9e4dc, type: 2}
-  - {fileID: 11400000, guid: c6ac4fe074d05c94b9170ecd9387b685, type: 2}
-  - {fileID: 11400000, guid: 084a66f2725e81f46a7d70936352b6df, type: 2}
-  - {fileID: 11400000, guid: a3c92f95d16e83e46bd8697172630ce5, type: 2}
+  cards: []
   cardBackImage: {fileID: 1825364237, guid: 0561379f815a8cf4cb67c4cdd9ef35de, type: 3}
-  roundRemaining: 10
+  roundRemaining: 0
   maxRound: 10
   playerHealth: 100
   opponentHealth: 100

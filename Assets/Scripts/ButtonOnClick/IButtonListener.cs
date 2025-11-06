@@ -13,7 +13,13 @@ public abstract class IButtonListener : MonoBehaviour
             button = gameObject.AddComponent<Button>();
         
         button.onClick.AddListener(OnClick);
+        button.onClick.AddListener(DisableButtonWhenClicked);
     }
 
     public abstract void OnClick();
+
+    public virtual void DisableButtonWhenClicked()
+    {
+        button.interactable = false;
+    }
 }

@@ -12,8 +12,7 @@ public class Computer : IPlayer
     private static Computer instance;
 
     public static Computer GetInstance() => instance;
-
-
+    
     private Coroutine catchCoroutine;
     
     private void Awake()
@@ -33,11 +32,16 @@ public class Computer : IPlayer
         }
         DontDestroyOnLoad(gameObject);
     }
-
-    // public void Start()
-    // {
-    //
-    // }
+    
+    
+    private void OnEnable()
+    {
+        GameEvents.OnUserHavePriority += StopCatchCoroutine;
+    }
+    private void OnDisable()
+    {
+        GameEvents.OnUserHavePriority -= StopCatchCoroutine;
+    }
 
 
     public void StartCatchCoroutine() => catchCoroutine = StartCoroutine(CatchCoroutine());
@@ -51,15 +55,12 @@ public class Computer : IPlayer
         yield return new WaitForSeconds(randomDelay);
 
         // 2️⃣ 컴퓨터 우선권 처리 호출
-        Action action = OneRound.GetInstance().GetOnComputerPrio();
-        action?.Invoke();
-
+        // Computer has clicked the card
+        GameEvents.OnClickCardOnTable.Invoke(Computer.GetInstance());
+        
         Debug.Log($"[CatchCoroutine] Invoked computer priority after {randomDelay:F2} seconds");
     }
-
-
-
-
+    
     private PlayerChoice RandomChoice()
     {
         if (Random.value < 0.5f)
@@ -72,6 +73,7 @@ public class Computer : IPlayer
     public void ChooseAttackOrKeep()
     {
         // Random selection between 2 choices
+        // TODO: Refactor this with game events as well
         Action action;
         if (RandomChoice() == PlayerChoice.Attack)
         {
@@ -83,5 +85,10 @@ public class Computer : IPlayer
             action = OneRound.GetInstance().GetOnComputerChoseKeep();
             action.Invoke();
         }
+    }
+
+    public override void HavePriority()
+    {
+        ChooseAttackOrKeep();
     }
 }

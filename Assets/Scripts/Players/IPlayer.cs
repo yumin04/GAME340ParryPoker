@@ -33,4 +33,5 @@ public abstract class IPlayer : MonoBehaviour
     public void ResetPlayerHandData() => playerHandData.ResetData();
 
     // Notify(this)
+    public abstract void HavePriority();
 }

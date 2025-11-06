@@ -12,8 +12,8 @@ public class Table : MonoBehaviour
     // private List<CardDataSO> playerCards;
     // private GameDataSO TableData;
 
-
-    [SerializeField] private RectTransform tableMainDisplayParent; // Main Panel
+    [SerializeField]private GameObject tableMainDisplayPrefab;
+    private RectTransform tableMainDisplayParent; // Main Panel
     [SerializeField] private RectTransform tableTopDisplayParent; // Top Panel
 
     [SerializeField] private GameObject cardDisplayPrefab; // Card UI prefab
@@ -37,8 +37,37 @@ public class Table : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
+        
         instance = this;
+        tableMainDisplayParent =  tableMainDisplayPrefab.GetComponent<RectTransform>();
+    }
+
+    private void OnEnable()
+    {
+        GameEvents.OnEndOfRound += OnRoundEnd;
+
+        GameEvents.OnUserHavePriority += ShowChosenCard;
+    }
+
+    private void OnDisable()
+    {
+        GameEvents.OnEndOfRound -= OnRoundEnd;
+        
+        GameEvents.OnUserHavePriority -= ShowChosenCard;
+    }
+    
+    private void OnRoundEnd(CardDataSO obj)
+    {
+        RemoveAllChildInMainTable();
+
+    }
+
+    private void RemoveAllChildInMainTable()
+    {
+        for (int i = tableMainDisplayParent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(tableMainDisplayParent.GetChild(i).gameObject);
+        }
     }
 
     public void StartFlipAllCardsCountdown(int cardVisibleDuration)

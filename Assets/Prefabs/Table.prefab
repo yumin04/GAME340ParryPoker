@@ -145,7 +145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c30ca2d1553c473b8ea41e367bc951f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Table
-  tableMainDisplayParent: {fileID: 8254862392837805867}
+  tableMainDisplayPrefab: {fileID: 1157244785762600720}
   tableTopDisplayParent: {fileID: 2273422528743952708}
   cardDisplayPrefab: {fileID: 6510964259408958319, guid: 897dfbf577568064c93ef08a55c29abd, type: 3}
 --- !u!1 &7372317459470068840

@@ -13,7 +13,6 @@ public class Game : MonoBehaviour
     [SerializeField] private GameObject roundGameObject;
     [SerializeField] private GameObject tableGameObject;
     
-    private GameObject currentRoundObject;
 
     public static Game GetInstance() => instance;
 
@@ -30,12 +29,14 @@ public class Game : MonoBehaviour
 
     private void OnEnable()
     {
-        GameEvents.OnNewGameStarted += ResetGameTableData;   
+        GameEvents.OnNewGameStarted += ResetGameTableData;
+        GameEvents.OnEndOfRound += OnRoundEnd;
     }
 
     private void OnDisable()
     {
         GameEvents.OnNewGameStarted -= ResetGameTableData;
+        GameEvents.OnEndOfRound -= OnRoundEnd;
     }
 
     void Start()
@@ -86,20 +87,8 @@ public class Game : MonoBehaviour
         Debug.Log($"[{nameof(AddAllCardsForGame)}] Added {cardCount} random cards to gameTableData.");
     }
 
-    private void ResetGameTableData()
-    {
-        gameTableData.ResetDataForGame();
-    }
-
-    // public void AddCard(CardDataSO cardData)
-    // {
-    //     TableData.cards.Add(cardData);
-    // }
-    //
-    // public void AddCard(CardObject cardObject)
-    // {
-    //     TableData.cards.Add(cardObject.GetCardData());
-    // }
+    private void ResetGameTableData() => gameTableData.ResetDataForGame();
+    
     private IEnumerator InitializeGame()
     {
         yield return null; // 한 프레임 기다려서 모든 Start() 실행 이후 실행
@@ -114,12 +103,7 @@ public class Game : MonoBehaviour
         Player.GetInstance().DisplayPlayerCard();
     }
 
-
-    // TODO: REFACTOR
-    // TODO: REFACTOR
-    // TODO: VERY IMPORTANT REFACTOR
-    // TODO: WILL TAKE LONG
-
+    
     public Action GetOnTableCardShowEnd()
     {
         return OnTableCardShowEnd;
@@ -136,12 +120,12 @@ public class Game : MonoBehaviour
         OnNewRound();
     }
 
-    public Action GetOnRoundEnd() => OnRoundEnd;
+    // public Action GetOnRoundEnd() => OnRoundEnd;
 
-
-    private void OnRoundEnd()
+    // TODO: implement observer here
+    private void OnRoundEnd(CardDataSO cardData)
     {
-        if (gameTableData.cards.Remove(OneRound.GetInstance().GetCurrentRoundCardData()))
+        if (gameTableData.cards.Remove(cardData))
         {
             Debug.Log("[Game.cs] Removed Successfully");
         }
@@ -149,7 +133,8 @@ public class Game : MonoBehaviour
         {
             Debug.Log("[Game.cs] Not removed. Make sure to fix this properly");
         }
-        Destroy(currentRoundObject);
+        
+        // Observer used so we do not need to do this
         if (gameTableData.roundRemaining > 0)
         {
             OnNewRound();
@@ -167,8 +152,8 @@ public class Game : MonoBehaviour
 
     private void OnNewRound()
     {
-        gameTableData.roundRemaining--;
-        currentRoundObject = Instantiate(roundGameObject);
+        gameTableData.roundRemaining--; 
+        Instantiate(roundGameObject);
     }
 
 

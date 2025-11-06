@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SOFile;
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,14 +34,7 @@ public class Player : IPlayer
         }
         DontDestroyOnLoad(gameObject);
     }
-    // public void Start()
-    // {
-    //
-    //     
-    //
-    //
-    //     playerHandData.ResetData();
-    // }
+
     
     public void DisplayPlayerCard()
     {
@@ -55,5 +49,8 @@ public class Player : IPlayer
             display.FlipCardFrontwards();
         }
     }
-
+    public override void HavePriority()
+    {
+        GameEvents.OnUserHavePriority.Invoke();
+    }
 }
