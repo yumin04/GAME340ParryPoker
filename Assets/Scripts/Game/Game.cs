@@ -147,6 +147,9 @@ public class Game : MonoBehaviour
 
     private void CalculateWinnerOfGame()
     {
+        int playerDamage = Player.GetInstance().CalculateHand();
+        int computerDamage = Computer.GetInstance().CalculateHand();
+        
         throw new NotImplementedException();
     }
 

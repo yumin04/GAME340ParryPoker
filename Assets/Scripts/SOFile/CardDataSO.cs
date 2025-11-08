@@ -1,11 +1,4 @@
 ﻿using UnityEngine;
-public enum Suit
-{
-    Spade,
-    Club,
-    Heart,
-    Diamond
-}
 
 namespace SOFile
 {

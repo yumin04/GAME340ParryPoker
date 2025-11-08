@@ -1,19 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-public enum HandRank
-{
-    HighCard,
-    OnePair,
-    TwoPair,
-    ThreeOfAKind,
-    Straight,
-    BackStraight,
-    Flush,
-    FullHouse,
-    FourOfAKind,
-    StraightFlush,
-    RoyalStraightFlush
-}
 
 
 namespace SOFile
@@ -25,7 +11,6 @@ namespace SOFile
         public List<CardDataSO> cards;
 
         public HandRank myHandRank;
-        
         public void ResetData()
         {
             cards.Clear();
