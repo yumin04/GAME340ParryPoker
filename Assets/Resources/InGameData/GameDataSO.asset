@@ -15,7 +15,5 @@ MonoBehaviour:
   cards: []
   cardBackImage: {fileID: 1825364237, guid: 0561379f815a8cf4cb67c4cdd9ef35de, type: 3}
   roundRemaining: 0
-  maxRound: 10
-  playerHealth: 100
-  opponentHealth: 100
+  maxRound: 2
   cardVisibleDuration: 5

@@ -8,8 +8,6 @@ public class CardButtonListener : IButtonListener
     public override void OnClick()
     {
         //PlayerClicked
-        Debug.Log("[DEBUG] Before OnclickCardOnTable Invoke");
         GameEvents.OnClickCardOnTable.Invoke(Player.GetInstance());
-        Debug.Log("[DEBUG] After OnclickCardOnTable Invoke");
     }
 }

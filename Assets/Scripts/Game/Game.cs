@@ -39,7 +39,11 @@ public class Game : MonoBehaviour
         GameEvents.OnEndOfRound -= OnRoundEnd;
     }
 
-    void Start()
+    // void Start()
+    // {
+    // }
+
+    public void LoadGameData()
     {
         // Getting Game Data SO for the round
         gameTableData = Resources.Load<GameDataSO>("InGameData/GameDataSO");
@@ -48,28 +52,30 @@ public class Game : MonoBehaviour
         {
             Debug.LogError("[Player] Failed to load UserDataSO assets from Resources/UserData/");
         }
-        
-        // Reset Data
-        GameEvents.OnNewGameStarted.Invoke();
+    }
 
-        
-        
-        // Add all the round cards here
-        AddAllCardsForGame();
-        
+    public void ResetGameData()
+    {
+        GameEvents.OnNewGameStarted.Invoke();
+    }
+
+    public void InstantiateTableObject()
+    {
         // Initialize Table Object
         Instantiate(tableGameObject);
-
+    }
+    
+    public void InitializeGame()
+    {
         // Initialize Game for players and display player card
-        StartCoroutine(InitializeGame());
+        StartCoroutine(AddCardsToEachPlayers());
 
         // Display All Cards 
         Table.GetInstance().DisplayTableCardsInMain(gameTableData.cards);
         Table.GetInstance().StartFlipAllCardsCountdown(gameTableData.cardVisibleDuration);
-
     }
-    
-    private void AddAllCardsForGame()
+
+    public void AddAllCardsForGame()
     {
         // 1️⃣ 기존 카드 초기화
         gameTableData.cards.Clear();
@@ -89,7 +95,7 @@ public class Game : MonoBehaviour
 
     private void ResetGameTableData() => gameTableData.ResetDataForGame();
     
-    private IEnumerator InitializeGame()
+    private IEnumerator AddCardsToEachPlayers()
     {
         yield return null; // 한 프레임 기다려서 모든 Start() 실행 이후 실행
         // Player와 Computer에게 각각 2장씩
@@ -109,8 +115,8 @@ public class Game : MonoBehaviour
         return OnTableCardShowEnd;
     }
 
-    private void OnTableCardShowEnd() => StartGame();
-    private void StartGame()
+    private void OnTableCardShowEnd() => StartRound();
+    private void StartRound()
     {
         // Flip card and put board on top
         FlipTableCards();
@@ -134,6 +140,7 @@ public class Game : MonoBehaviour
             Debug.Log("[Game.cs] Not removed. Make sure to fix this properly");
         }
         
+        Player.GetInstance().DisplayPlayerCard();
         // Observer used so we do not need to do this
         if (gameTableData.roundRemaining > 0)
         {
@@ -145,12 +152,30 @@ public class Game : MonoBehaviour
         }
     }
 
+    // private void CalculateWinnerOfGame()
+    // {
+    //     // TODO: Implement later
+    //     // int playerDamage = Player.GetInstance().CalculateHand();
+    //     // int computerDamage = Computer.GetInstance().CalculateHand();
+    //     
+    //     throw new NotImplementedException();
+    // }
     private void CalculateWinnerOfGame()
     {
-        int playerDamage = Player.GetInstance().CalculateHand();
-        int computerDamage = Computer.GetInstance().CalculateHand();
-        
-        throw new NotImplementedException();
+        // TODO: Delete, this is not correct
+        int winner = UnityEngine.Random.Range(0, 2);
+        int damage = 10;
+        if (winner == 0)
+        {
+            Match.GetInstance().GameEnd(Player.GetInstance(), damage);
+            // Debug.Log("Player wins this game!");
+        }
+        else
+        {
+            Match.GetInstance().GameEnd(Computer.GetInstance(), damage);
+            // Debug.Log("Computer wins this game!");
+
+        }
     }
 
     private void OnNewRound()
