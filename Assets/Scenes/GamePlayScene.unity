@@ -473,6 +473,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1069146736}
+  - component: {fileID: 1069146737}
   m_Layer: 0
   m_Name: Attack
   m_TagString: Untagged
@@ -496,6 +497,23 @@ Transform:
   - {fileID: 1298949602}
   m_Father: {fileID: 1247325107901768480}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1069146737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1069146735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f395bbdbeaa4f54ae91ae2a606b203c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Attack
+  background: {fileID: 0}
+  hittingSpace: {fileID: 0}
+  indicator: {fileID: 0}
+  indicatorSpeed: 3
+  comboResetTime: 1
 --- !u!1 &1298949601
 GameObject:
   m_ObjectHideFlags: 0
@@ -508,6 +526,7 @@ GameObject:
   - component: {fileID: 1298949605}
   - component: {fileID: 1298949604}
   - component: {fileID: 1298949603}
+  - component: {fileID: 1298949606}
   m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
@@ -682,6 +701,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1298949606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1298949601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9729e34828a472aa703103ea020d55b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Background
 --- !u!1 &1438743084
 GameObject:
   m_ObjectHideFlags: 0
@@ -692,6 +723,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1438743085}
   - component: {fileID: 1438743086}
+  - component: {fileID: 1438743087}
   m_Layer: 0
   m_Name: HittingSpace
   m_TagString: Untagged
@@ -772,6 +804,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1438743087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1438743084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 465e43576e044fdf9bea234183de733e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HittingSpace
 --- !u!1 &1560041596
 GameObject:
   m_ObjectHideFlags: 0
@@ -828,6 +872,8 @@ GameObject:
   - component: {fileID: 1629737647}
   - component: {fileID: 1629737649}
   - component: {fileID: 1629737648}
+  - component: {fileID: 1629737650}
+  - component: {fileID: 1629737651}
   m_Layer: 0
   m_Name: Indicator
   m_TagString: Untagged
@@ -954,6 +1000,45 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1629737650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1629737646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f89423f6bd044e479e1c2a8afae2dc69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Indicator
+--- !u!50 &1629737651
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1629737646}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &1723054949
 GameObject:
   m_ObjectHideFlags: 0
@@ -1056,7 +1141,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3705370127674585814, guid: 7418ec067bb48dd40a7938c82633c6bb, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -9
+      value: -7
       objectReference: {fileID: 0}
     - target: {fileID: 3705370127674585814, guid: 7418ec067bb48dd40a7938c82633c6bb, type: 3}
       propertyPath: m_LocalPosition.y
