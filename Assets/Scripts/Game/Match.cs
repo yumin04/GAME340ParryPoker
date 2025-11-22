@@ -1,4 +1,3 @@
-
 using SOFile;
 using UnityEngine;
 
@@ -7,7 +6,8 @@ public class Match : MonoBehaviour
     private static Match instance;
 
     private MatchDataSO matchData;
-
+    
+    
     public static Match GetInstance() => instance;
 
     
@@ -23,7 +23,7 @@ public class Match : MonoBehaviour
         instance = this;
     }
 
-    void Start()
+    public void Start()
     {
         // Getting Game Data SO for the round
         matchData = Resources.Load<MatchDataSO>("InGameData/MatchDataSO");
@@ -59,5 +59,6 @@ public class Match : MonoBehaviour
         {
             Debug.LogWarning("Unknown player type in GameEnd.");
         }
+        SceneLoader.GetInstance().LoadEndScene();
     }
 }

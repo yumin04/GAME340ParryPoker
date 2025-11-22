@@ -73,28 +73,24 @@ public class OneRound : MonoBehaviour
     // METHODS
     private void OnPlayerChoseAttack()
     {
-        Computer.GetInstance().KeepCard(currentRoundCardData);
-        // TODO: Implement Attack
-        // initialize attack object?
-        // TODO: Delete this since won't end round after attack
-        EndRound();
+        GameEvents.OnPlayerAttackChosen.Invoke();
     }
     
-    // TODO: Discuss if Keep is needed
     private void OnPlayerChoseKeep()
     {
         Player.GetInstance().KeepCard(currentRoundCardData);
         EndRound();
     }
 
-
+    public void OnKeep(IPlayer player)
+    {
+        player.KeepCard(currentRoundCardData);
+        EndRound();
+    }
     private void OnComputerChoseAttack()
     {
-        Player.GetInstance().KeepCard(currentRoundCardData);
-        // TODO: Implement Attack
-        // initialize attack object?
-        // TODO: Delete this since won't end round after attack
-        EndRound();
+           
+        GameEvents.OnComputerAttackChosen.Invoke();
     }
     
     private void OnComputerChoseKeep()

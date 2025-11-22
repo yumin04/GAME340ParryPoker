@@ -6,12 +6,14 @@ using UnityEngine;
 public abstract class IPlayer : MonoBehaviour
 {
     protected UserDataSO playerHandData;
-    private void OnEnable()
+    
+    [SerializeField] protected AttackDefenceInitializer attackDefenceInitializer;
+    protected virtual void OnEnable()
     {
         GameEvents.OnNewGameStarted += ResetPlayerHandData;   
     }
 
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
         GameEvents.OnNewGameStarted -= ResetPlayerHandData;
     }
@@ -26,11 +28,20 @@ public abstract class IPlayer : MonoBehaviour
     public void KeepCard(CardObject cardData) => AddCard(cardData);
     
     
-    public void ResetPlayerHandData() => playerHandData.ResetData();
+    private void ResetPlayerHandData() => playerHandData.ResetData();
 
     // Notify(this)
     public abstract void HavePriority();
+    protected virtual void InitializeAttackObject()
+    {
+        attackDefenceInitializer.InstantiateAttackObject();
+        Attack.GetInstance().StartAttackLoop();
+    }
 
+    protected virtual void InitializeDefendObject()
+    {
+        attackDefenceInitializer.InstantiateDefendObject();
+    }
     
     public int CalculateHand()
     {

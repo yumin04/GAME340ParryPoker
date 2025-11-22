@@ -97,6 +97,7 @@ public class Game : MonoBehaviour
     
     private IEnumerator AddCardsToEachPlayers()
     {
+        Debug.Log("Inside AddCardsToEachPlayers");
         yield return null; // 한 프레임 기다려서 모든 Start() 실행 이후 실행
         // Player와 Computer에게 각각 2장씩
         for (int i = 0; i < 2; i++)

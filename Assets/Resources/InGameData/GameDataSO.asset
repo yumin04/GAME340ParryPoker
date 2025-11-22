@@ -12,8 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c6d5f4b646c44feaad968025ca857ad, type: 3}
   m_Name: GameDataSO
   m_EditorClassIdentifier: Assembly-CSharp::SOFile.TableDataSO
-  cards: []
+  cards:
+  - {fileID: 11400000, guid: 6de71a75fc28d444a8c352d1780da8e1, type: 2}
+  - {fileID: 11400000, guid: fe016c7f4809da545800bd9205740400, type: 2}
+  - {fileID: 11400000, guid: 92dccf09db918504ba71abecc560e0fa, type: 2}
+  - {fileID: 11400000, guid: cc202a3b7ec377742a331d1fb50641d7, type: 2}
+  - {fileID: 11400000, guid: b6f6590c5f2b7154fbe55a0c16e3cc75, type: 2}
+  - {fileID: 11400000, guid: d9ab039f9b823a84da4db1c498efdbfc, type: 2}
+  - {fileID: 11400000, guid: 92dccf09db918504ba71abecc560e0fa, type: 2}
+  - {fileID: 11400000, guid: 8e966b9c1f3ab104fb32ada0c904d513, type: 2}
   cardBackImage: {fileID: 1825364237, guid: 0561379f815a8cf4cb67c4cdd9ef35de, type: 3}
-  roundRemaining: 0
-  maxRound: 2
-  cardVisibleDuration: 5
+  roundRemaining: 7
+  maxRound: 10
+  cardVisibleDuration: 15

@@ -10,10 +10,10 @@ public class Attack : MonoBehaviour
     [SerializeField] private GameObject hittingSpace;   // 빨강
     [SerializeField] private GameObject indicator;      // 파랑 (내부에서 움직이는 선)
     
-    [SerializeField] private float indicatorSpeed = 3f;
-    [SerializeField] private float comboResetTime = 1f;
-
-    private bool isMovingRight = true;
+    // [SerializeField] private float indicatorSpeed = 3f;
+    // [SerializeField] private float comboResetTime = 1f;
+    //
+    // private bool isMovingRight = true;
     private int combo = 0;
     
     private float currentRandomRatio;
@@ -23,43 +23,67 @@ public class Attack : MonoBehaviour
     private GameObject currentBackgroundObject;
     private int attackRoundRemaining;
 
-    public void Awake()
+    private void Awake()
     {
-        InstantiateOneAttackObject();
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
     }
 
     public void OnEnable()
     {
-        //GameEvents.OnAttackRoundEnd += CheckAttackRoundRemaining;
+        GameEvents.OnAttackRoundEnd += CheckAttackRoundRemaining;
+
     }
     public void OnDisable()
     {
-        //GameEvents.OnAttackRoundEnd -= CheckAttackRoundRemaining;
+        GameEvents.OnAttackRoundEnd -= CheckAttackRoundRemaining;
     }
     public void StartAttackLoop()
     {
+        Debug.Log("Is this Starting when computer is clicking it?");
         attackRoundRemaining = 5;
-        Destroy(currentBackgroundObject);
+        combo = 0;
         InstantiateOneAttackObject();
     }
 
+    public void SetCombo(int computerCombo)
+    {
+        this.combo = computerCombo;
+    }
+
+    public void EndAttackLoop()
+    {
+        attackRoundRemaining--;
+        GameEvents.OnComputerAttackEnd.Invoke(combo);
+    }
     private void CheckAttackRoundRemaining()
     {
+        CheckForCombo();
+        Destroy(currentBackgroundObject);
+        attackRoundRemaining--;
         if(attackRoundRemaining == 0)
         {
-            //GameEvents.OnAttackPhaseEnd.Invoke(combo);
+            if(currentBackgroundObject != null)
+                Destroy(currentBackgroundObject);
+            
+            // Initialize the CardObject and shoot it across to opponent
+            GameEvents.OnAllAttackEnd.Invoke(combo);
+            return;
         }
-        attackRoundRemaining--;
-        CheckForCombo();
         InstantiateOneAttackObject();
     }
 
-
+    public Vector3 GetAttackPosition() => transform.position;
 
     private void InstantiateOneAttackObject()
     {
         // 1️⃣ Background 생성
         currentBackgroundObject = Instantiate(background, transform);
+        currentBackgroundObject.transform.localPosition = new Vector3(0, 0, 0);
     
         // 2️⃣ Hitting Space 생성 (랜덤 위치)
         // Vector3 hitPos = GetRandomHittingSpacePosition();
@@ -90,7 +114,8 @@ public class Attack : MonoBehaviour
     {
         if (CalculateIndicatorOnHittingSpace())
         {
-            
+            combo++;
+            Debug.Log("Combo: " + combo);
         }
     }
     private bool CalculateIndicatorOnHittingSpace()

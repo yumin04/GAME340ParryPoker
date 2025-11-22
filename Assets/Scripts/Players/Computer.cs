@@ -30,31 +30,45 @@ public class Computer : IPlayer
         {
             Debug.LogError("[Player] Failed to load UserDataSO assets from Resources/UserData/");
         }
-        DontDestroyOnLoad(gameObject);
     }
     
     
-    private void OnEnable()
+    protected override void OnEnable()
     {
         GameEvents.OnUserHavePriority += StopCatchCoroutine;
+        GameEvents.OnPlayerAttackChosen += InitializeDefendObject;
+        GameEvents.OnComputerAttackChosen += InitializeAttackObject;
+        
+        base.OnEnable(); 
     }
-    private void OnDisable()
+    protected override void OnDisable()
     {
         GameEvents.OnUserHavePriority -= StopCatchCoroutine;
+        GameEvents.OnPlayerAttackChosen -= InitializeDefendObject;
+        GameEvents.OnComputerAttackChosen -= InitializeAttackObject;
+        base.OnDisable(); 
     }
 
+    protected override void InitializeDefendObject()
+    {
+        base.InitializeDefendObject();
+        GameEvents.OnSetDefencePlayer.Invoke(Computer.GetInstance());
+        DefendAttack();
+    }
 
+    protected override void InitializeAttackObject()
+    {
+        attackDefenceInitializer.InstantiateAttackObject();
+        AttackOpponent();
+    }
     public void StartCatchCoroutine() => catchCoroutine = StartCoroutine(CatchCoroutine());
     public void StopCatchCoroutine() => StopCoroutine(catchCoroutine);
     
     private IEnumerator CatchCoroutine()
     {
-        // 1️⃣ 1~2초 랜덤 대기
-        // TODO: change time
-        float randomDelay = Random.Range(10f, 20f);
+        float randomDelay = Random.Range(1f, 2f);
         yield return new WaitForSeconds(randomDelay);
-
-        // 2️⃣ 컴퓨터 우선권 처리 호출
+        
         // Computer has clicked the card
         GameEvents.OnClickCardOnTable.Invoke(Computer.GetInstance());
         
@@ -65,8 +79,10 @@ public class Computer : IPlayer
     {
         if (Random.value < 0.5f)
         {
+            Debug.Log("Computer Chose Attack");
             return PlayerChoice.Attack;
         }
+        Debug.Log("Computer Chose Keep");
         return PlayerChoice.Keep;
     }
 
@@ -87,8 +103,41 @@ public class Computer : IPlayer
         }
     }
 
+    private void AttackOpponent()
+    {
+        // 1️⃣ 랜덤으로 콤보 개수 정하기
+        int combo = Random.Range(1, 4); // 예: 1~3 콤보
+        Attack.GetInstance().SetCombo(combo);
+        Table.GetInstance().SetIsComputer();
+        Attack.GetInstance().EndAttackLoop();
+    }
+
+    private void DefendAttack()
+    {
+        bool canDefend = Random.value > 0.5f;
+
+        if (canDefend)
+        {
+            Debug.Log("Will Be Defending");
+            GameEvents.OnDefendInput?.Invoke();
+        }
+        else
+        {
+            Debug.Log("Defense failed!");
+        }
+    }
+
     public override void HavePriority()
     {
         ChooseAttackOrKeep();
+    }
+    
+    public void OnTriggerEnter2D(Collider2D other)
+    {
+        Debug.Log("Computer Taking Damage");
+        // TODO: Refactor
+        Action action;
+        action = OneRound.GetInstance().GetOnComputerChoseKeep();
+        action.Invoke();
     }
 }

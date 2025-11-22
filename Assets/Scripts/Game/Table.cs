@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using SOFile;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -14,17 +15,34 @@ public class Table : MonoBehaviour
 
     [SerializeField]private GameObject tableMainDisplayPrefab;
     private RectTransform tableMainDisplayParent; // Main Panel
+    
     [SerializeField] private RectTransform tableTopDisplayParent; // Top Panel
 
     [SerializeField] private GameObject cardDisplayPrefab; // Card UI prefab
+
+    [SerializeField] private GameObject cardObjectPrefab;
+
+    [SerializeField] private TextMeshProUGUI cardCountdownText;
     
     private readonly WaitForSeconds oneSecond = new WaitForSeconds(1f);
     
     private static Table instance;
-
+    
+    
+    
     private CardDataSO currentCardData;
     private CardDisplay currentCardDisplay;
-    
+    private bool isComputer;
+
+    public void SetIsComputer()
+    {
+        isComputer = true;
+    }
+
+    public void SetIsPlayer()
+    {
+        isComputer = false;
+    }
     public static Table GetInstance()
     {
         return instance;
@@ -47,6 +65,9 @@ public class Table : MonoBehaviour
         GameEvents.OnEndOfRound += OnRoundEnd;
 
         GameEvents.OnUserHavePriority += ShowChosenCard;
+        
+        GameEvents.OnAllAttackEnd += OnAllAttackEnd;
+        GameEvents.OnComputerAttackEnd += OnAllAttackEnd;
     }
 
     private void OnDisable()
@@ -54,8 +75,12 @@ public class Table : MonoBehaviour
         GameEvents.OnEndOfRound -= OnRoundEnd;
         
         GameEvents.OnUserHavePriority -= ShowChosenCard;
+        
+        GameEvents.OnAllAttackEnd -= OnAllAttackEnd;
+        GameEvents.OnComputerAttackEnd -= OnAllAttackEnd;
     }
-    
+
+
     private void OnRoundEnd(CardDataSO obj)
     {
         RemoveAllChildInMainTable();
@@ -76,12 +101,13 @@ public class Table : MonoBehaviour
     }
     private IEnumerator FlipAllCardsCountdown(int cardVisibleDuration)
     {
-        for (int i = 0; i < cardVisibleDuration; i++)
+        for (int i = cardVisibleDuration; i > 0; i--)
         {
+            cardCountdownText.text = "Remaining Seconds: " + i;
             Debug.Log("Time Remaining: " + i);
             yield return oneSecond;
         }
-
+        cardCountdownText.text = "";
         Action action = Game.GetInstance().GetOnTableCardShowEnd();
         Game.GetInstance().Notify(action);
     }
@@ -175,4 +201,63 @@ public class Table : MonoBehaviour
     {
         currentCardDisplay.FlipCardFrontwards();
     }
+
+    private void OnAllAttackEnd(int combo)
+    {
+        InitializeCardAttack(combo);
+    }
+
+    private void OnAllDefenceEnd()
+    {
+        
+    }
+    
+    private void InitializeCardAttack(int combo)
+    {
+        GameObject obj = Instantiate(cardObjectPrefab);
+        var ao = obj.GetComponent<AttackObject>();
+        ao.SetCardData(currentCardData);
+        ao.transform.position = Attack.GetInstance().GetAttackPosition();
+        
+        Debug.Log("[DEBUG] Current Combo Number = " + combo);
+        switch (combo)
+        {
+            case 5:
+                ao.AddModifier(new ColorIncreaseRedModifier(0.2f));
+                ao.AddModifier(new SpeedModifier(1.5f));
+                goto case 4;
+
+            case 4:
+                ao.AddModifier(new ColorIncreaseRedModifier(0.2f));
+                ao.AddModifier(new SpeedModifier(1.5f));
+                goto case 3;
+
+            case 3:
+                ao.AddModifier(new ColorIncreaseRedModifier(0.2f));
+                ao.AddModifier(new SpeedModifier(1.0f));
+                goto case 2;
+
+            case 2:
+                ao.AddModifier(new ColorIncreaseRedModifier(0.2f));
+                ao.AddModifier(new RotationModifier(180f));
+                goto case 1;
+
+            case 1:
+                ao.AddModifier(new ColorIncreaseRedModifier(0.2f));
+                ao.AddModifier(new SpeedModifier(1f));
+                break;
+        }
+
+
+        if (isComputer)
+        {
+            Debug.Log("Inside -1");
+            ao.AddModifier(new DirectionModifier(-1f));
+        }
+        ao.ChangeBehavior(new MovingAttackBehavior());
+
+
+    }
+
+
 }
